@@ -7,3 +7,11 @@ CREATE TABLE member
     nickname   VARCHAR(255) NOT NULL UNIQUE,
     stream_key VARCHAR(255) NOT NULL UNIQUE
 );
+
+CREATE TABLE member_channel
+(
+    id          SERIAL PRIMARY KEY,
+    title       VARCHAR(255) NOT NULL UNIQUE,
+    streamer    VARCHAR(255) NOT NULL,
+    on_air      BOOLEAN NOT NULL
+);
