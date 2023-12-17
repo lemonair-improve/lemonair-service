@@ -18,6 +18,7 @@ public class MemberService {
 
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
+    private final MemberChannelService memberChannelService;
 
     private static final String PASSWORD_PATTERN =
         "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=!])(?=\\S+$).{8,}$";
@@ -44,7 +45,6 @@ public class MemberService {
             .flatMap(tuple -> {
                 boolean emailExistsValue = tuple.getT1();
                 boolean nicknameExistsValue = tuple.getT2();
-
                 if (emailExistsValue) {
                     return Mono.just(ResponseEntity.badRequest().body("해당 이메일은 이미 사용 중입니다."));
                 } else if (nicknameExistsValue) {
@@ -58,6 +58,8 @@ public class MemberService {
                     );
 
                     return memberRepository.save(newMember)
+                        .flatMap(savedMember -> memberChannelService.createChannel(savedMember.getNickname()))
+                        .log()
                         .map(savedMember -> ResponseEntity.ok().body("회원가입이 완료되었습니다."))
                         .onErrorResume(throwable -> {
                             return Mono.just(ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
