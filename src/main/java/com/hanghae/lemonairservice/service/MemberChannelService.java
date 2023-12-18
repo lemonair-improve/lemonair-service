@@ -1,5 +1,6 @@
 package com.hanghae.lemonairservice.service;
 
+import java.util.List;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -22,15 +23,16 @@ public class MemberChannelService {
 	public Mono<MemberChannel> createChannel(String nickname) {
 		return memberChannelRepository.save(new MemberChannel(nickname))
 			.onErrorResume(exception -> Mono.error(new RuntimeException("user의 channel 생성 오류")));
-
 	}
 
-	public Mono<ResponseEntity<Flux<MemberChannelResponseDto>>> getChannelsByOnAirTrue() {
+	public Mono<ResponseEntity<List<MemberChannelResponseDto>>> getChannelsByOnAirTrue() {
 		Flux<MemberChannelResponseDto> memberChannelResponseDtoFlux = memberChannelRepository.findAllByOnAirIsTrue()
 			.map(MemberChannelResponseDto::new)
 			.doOnNext(this::updateThumbnailUrl);
 
-		return Mono.just(ResponseEntity.ok(memberChannelResponseDtoFlux));
+		return memberChannelResponseDtoFlux
+			.collectList()
+			.map(ResponseEntity::ok);
 	}
 
 	private void updateThumbnailUrl(MemberChannelResponseDto memberChannelResponseDto) {
