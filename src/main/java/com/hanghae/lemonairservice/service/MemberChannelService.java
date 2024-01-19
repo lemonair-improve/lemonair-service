@@ -41,14 +41,14 @@ public class MemberChannelService {
 	}
 
 	// TODO: 2023-12-17 postman에서만 빈 mono가 return되는건지 확인해볼 필요가 있다.
-	public Mono<ResponseEntity<MemberChannelDetailResponseDto>> getChannelDetail(Long channelId) {
+	public Mono<ResponseEntity<Mono<MemberChannelDetailResponseDto>>> getChannelDetail(Long channelId) {
 		return memberChannelRepository.findById(channelId)
 			.switchIfEmpty(Mono.error(new RuntimeException("해당 방송이 존재하지 않습니다.")))
 			.filter(MemberChannel::getOnAir)
 			.switchIfEmpty(Mono.error(new RuntimeException("해당 방송은 종료되었습니다.")))
 			.map(MemberChannelDetailResponseDto::new)
 			.doOnNext(this::updateM3U8Url)
-			.map(ResponseEntity::ok);
+			.map(memberChannelDetailResponseDto -> ResponseEntity.ok(Mono.just(memberChannelDetailResponseDto)));
 	}
 
 	private void updateM3U8Url(MemberChannelDetailResponseDto memberChannelDetailResponseDto) {
