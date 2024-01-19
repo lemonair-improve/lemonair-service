@@ -1,15 +1,21 @@
 package com.hanghae.lemonairservice.entity;
 
-import java.util.UUID;
-import lombok.Getter;
-import lombok.Setter;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Table;
 
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Table("member")
 @Getter
 @Setter
+@Builder
+@AllArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Member {
 
 	@Id
@@ -17,18 +23,19 @@ public class Member {
 
 	private String email;
 
-	private String password;
+	private String loginId;
 
-	private String name;
+	private String password;
 
 	private String nickname;
 
 	private String streamKey;
-	public Member(String email, String password, String name, String nickname) {
+
+	public Member(String email, String password, String loginId, String nickname, String streamKey) {
 		this.email = email;
 		this.password = password;
-		this.name = name;
+		this.loginId = loginId;
 		this.nickname = nickname;
-		this.streamKey = UUID.randomUUID().toString();
+		this.streamKey = streamKey;
 	}
 }

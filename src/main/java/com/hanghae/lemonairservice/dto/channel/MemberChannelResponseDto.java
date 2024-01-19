@@ -2,20 +2,26 @@ package com.hanghae.lemonairservice.dto.channel;
 
 import com.hanghae.lemonairservice.entity.MemberChannel;
 
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
+@Builder
+@AllArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class MemberChannelResponseDto {
 	private Long channelId;
-	private String streamer;
+	private String streamerNickname;
 	private String title;
 	private String thumbnailUrl;
-	public MemberChannelResponseDto(MemberChannel memberChannel){
+
+	public MemberChannelResponseDto(MemberChannel memberChannel, String thumbnailUrl) {
 		this.channelId = memberChannel.getId();
-		this.streamer = memberChannel.getStreamer();
+		this.streamerNickname = memberChannel.getMember().getNickname();
 		this.title = memberChannel.getTitle();
-	}
-	public void updateThumbnailUrl(String thumbnailUrl){
 		this.thumbnailUrl = thumbnailUrl;
 	}
 }
