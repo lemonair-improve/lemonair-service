@@ -88,16 +88,12 @@ public class MemberService {
 
 
 	private Mono<Void> validatePassword(SignUpRequestDto signupRequestDto) {
-		if (!validatePassword(signupRequestDto.getPassword())) {
-			return Mono.error(
-				new ResponseStatusException(HttpStatus.BAD_REQUEST, "비밀번호는 최소 8자 이상, 대소문자, 숫자, 특수문자를 포함해야 합니다."));
-		}
-
-		if (!signupRequestDto.getPassword().equals(signupRequestDto.getPassword2())) {
-			return Mono.error(new ResponseStatusException(HttpStatus.BAD_REQUEST, "비밀번호가 일치하지 않습니다."));
-		}
-
-		return Mono.empty();
+		return Mono.just(signupRequestDto)
+			.filter(dto -> validatePassword(dto.getPassword()))
+			.switchIfEmpty(Mono.error(new ResponseStatusException(HttpStatus.BAD_REQUEST, "비밀번호는 최소 8자 이상, 대소문자, 숫자, 특수문자를 포함해야 합니다.")))
+			.filter(dto -> dto.getPassword().equals(dto.getPassword2()))
+			.switchIfEmpty(Mono.error(new ResponseStatusException(HttpStatus.BAD_REQUEST, "비밀번호가 일치하지 않습니다.")))
+			.then();
 	}
 
 	private Mono<Void> validateExists(Mono<Boolean> mono, String errorMessage) {
