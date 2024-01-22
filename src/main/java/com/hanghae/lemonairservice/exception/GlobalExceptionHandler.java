@@ -17,7 +17,7 @@ public class GlobalExceptionHandler {
 
 	@ExceptionHandler(ExpectedException.class)
 	protected Mono<ResponseEntity<String>> handleExpectedException(final ExpectedException exception) {
-		return Mono.just(ResponseEntity.status(exception.getCode()).body(exception.getMessage()));
+		return Mono.just(ResponseEntity.status(exception.getStatus()).body(exception.getMessage()));
 	}
 
 	@ExceptionHandler(RuntimeException.class)

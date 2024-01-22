@@ -6,10 +6,12 @@ import lombok.Getter;
 
 @Getter
 public class ExpectedException extends RuntimeException {
-	private final HttpStatusCode code;
-
-	public ExpectedException(HttpStatusCode code, String message) {
-		super(message);
-		this.code = code;
+	private final ErrorCode errorCode;
+	public HttpStatusCode getStatus(){
+		return errorCode.getStatus();
+	}
+	public ExpectedException(ErrorCode errorCode) {
+		super(errorCode.getMessage());
+		this.errorCode = errorCode;
 	}
 }

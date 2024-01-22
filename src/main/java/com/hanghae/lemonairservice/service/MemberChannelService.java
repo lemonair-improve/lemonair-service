@@ -9,7 +9,8 @@ import com.hanghae.lemonairservice.dto.channel.MemberChannelDetailResponseDto;
 import com.hanghae.lemonairservice.dto.channel.MemberChannelResponseDto;
 import com.hanghae.lemonairservice.entity.Member;
 import com.hanghae.lemonairservice.entity.MemberChannel;
-import com.hanghae.lemonairservice.exception.channel.NoOnAirChannelException;
+import com.hanghae.lemonairservice.exception.ErrorCode;
+import com.hanghae.lemonairservice.exception.ExpectedException;
 import com.hanghae.lemonairservice.repository.MemberChannelRepository;
 import com.hanghae.lemonairservice.repository.MemberRepository;
 
@@ -33,7 +34,7 @@ public class MemberChannelService {
 
 	public Mono<ResponseEntity<List<MemberChannelResponseDto>>> getChannelsByOnAirTrue() {
 		return memberChannelRepository.findAllByOnAirIsTrue()
-			.switchIfEmpty(Mono.error(new NoOnAirChannelException()))
+			.switchIfEmpty(Mono.defer(()->Mono.error(new ExpectedException(ErrorCode.NoOnAirChannel))))
 			.flatMap(this::convertToMemberChannelResponseDto)
 			.collectList()
 			.map(ResponseEntity::ok);

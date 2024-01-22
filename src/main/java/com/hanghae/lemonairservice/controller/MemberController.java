@@ -2,6 +2,7 @@ package com.hanghae.lemonairservice.controller;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -14,6 +15,7 @@ import com.hanghae.lemonairservice.dto.member.SignUpResponseDto;
 import com.hanghae.lemonairservice.security.UserDetailsImpl;
 import com.hanghae.lemonairservice.service.MemberService;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import reactor.core.publisher.Mono;
 
@@ -24,7 +26,7 @@ public class MemberController {
 	private final MemberService memberService;
 
 	@PostMapping("/signup")
-	public Mono<ResponseEntity<SignUpResponseDto>> signup(@RequestBody SignUpRequestDto signupRequestDto) {
+	public Mono<ResponseEntity<SignUpResponseDto>> signup(@RequestBody @Validated SignUpRequestDto signupRequestDto) {
 		return memberService.signup(signupRequestDto);
 	}
 
