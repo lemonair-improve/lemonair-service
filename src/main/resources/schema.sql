@@ -18,13 +18,22 @@ CREATE TABLE member_channel
     on_air          BOOLEAN      NOT NULL
 );
 
-CREATE TABLE point_log
+CREATE TABLE donation
 (
-    id           SERIAL PRIMARY KEY,
+    id           SERIAL PRIMARY KEY AUTO_INCREMENT,
     streamer_id  BIGINT       NOT NULL,
-    donater_id   BIGINT       NOT NULL,
+    donator_id   BIGINT       NOT NULL,
     contents     VARCHAR(255) NOT NULL,
-    donated_at   TIMESTAMP    NOT NULL,
+    donated_at   TIMESTAMP    NOT NULL DEFAULT NOW(),
     donate_point INTEGER      NOT NULL
 );
 
+CREATE TABLE charge
+(
+    id  SERIAL PRIMARY KEY AUTO_INCREMENT,
+    member_id BIGINT NOT NULL,
+    point INTEGER NOT NULL,
+    charged_at TIMESTAMP NOT NULL DEFAULT NOW()
+)
+
+alter table donation change donated_at donated_at TIMESTAMP NOT NULL DEFAULT NOW();
