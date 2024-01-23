@@ -22,6 +22,7 @@ public class GlobalExceptionHandler {
 
 	@ExceptionHandler(RuntimeException.class)
 	protected Mono<ResponseEntity<String>> handleUnExpectedException(final RuntimeException exception) {
+		log.error(exception.getClass().toString() + '\n' + exception.getCause() + '\n' + exception.getMessage());
 		Arrays.stream(exception.getStackTrace()).forEach(System.out::println);
 		return Mono.just(ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("예기치 못한 문제가 발생했습니다."));
 	}
@@ -29,7 +30,6 @@ public class GlobalExceptionHandler {
 	@ExceptionHandler(WebExchangeBindException.class)
 	protected Mono<ResponseEntity<String>> processValidationError(WebExchangeBindException exception) {
 		return Mono.just(exception.getBindingResult().getFieldErrors().get(0))
-			.map(fieldError -> ResponseEntity.status(HttpStatus.BAD_REQUEST)
-				.body(fieldError.getDefaultMessage()));
+			.map(fieldError -> ResponseEntity.status(HttpStatus.BAD_REQUEST).body(fieldError.getDefaultMessage()));
 	}
 }
