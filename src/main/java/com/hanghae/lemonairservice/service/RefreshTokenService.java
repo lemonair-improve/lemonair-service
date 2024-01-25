@@ -20,16 +20,13 @@ public class RefreshTokenService {
 	private final JwtUtil jwtUtil;
 
 	public Mono<RefreshResponseDto> refresh(RefreshRequestDto refreshRequestDto) {
-		return jwtUtil.validateRefreshToken(refreshRequestDto.getRefreshToken()).flatMap(isValidate -> {
-			if (isValidate) {
-				JwtTokenSubjectDto jwtTokenSubjectDto = jwtUtil.getSubjectFromToken(
-					refreshRequestDto.getRefreshToken());
+		return jwtUtil.validateRefreshToken(refreshRequestDto.getRefreshToken())
+			.filter(isValid -> !isValid)
+			.switchIfEmpty(Mono.error(new ResponseStatusException(HttpStatus.UNAUTHORIZED, "유효하지 않은 토큰입니다.")))
+			.flatMap(token -> {
+				JwtTokenSubjectDto jwtTokenSubjectDto = jwtUtil.getSubjectFromToken(refreshRequestDto.getRefreshToken());
 				return jwtUtil.createAccessToken(jwtTokenSubjectDto.getLoginId(), jwtTokenSubjectDto.getNickname())
 					.map(RefreshResponseDto::new);
-			} else {
-				return Mono.error(new ResponseStatusException(HttpStatus.UNAUTHORIZED, "유효하지 않은 토큰입니다."));
-			}
-		});
+			});
 	}
-
 }
