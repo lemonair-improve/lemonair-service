@@ -1,44 +1,45 @@
 package com.hanghae.lemonairservice.entity;
 
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
+
 import org.springframework.data.annotation.Id;
-import org.springframework.data.annotation.Transient;
-import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
 
+import com.hanghae.lemonairservice.dto.point.ChargePointRequestDto;
+import com.hanghae.lemonairservice.dto.point.DonationRequestDto;
+
 import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 @Table("point")
 @Getter
-@Setter
+@Builder
+@AllArgsConstructor(access = AccessLevel.PROTECTED)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Point {
 	@Id
 	private Long id;
-	@Column("member_id")
 	private Long memberId;
-	private String nickname;
-	private int point;
+	private Long donatorId;
+	private Boolean charge;
+	private Integer point;
+	private LocalDateTime createdAt;
 
-	@Transient
-	private Member member;
-
-	public Point(Member member) {
-		this.memberId = member.getId();
-		this.nickname = member.getNickname();
-		this.point = 0;
+	public Point(ChargePointRequestDto chargePointRequestDto, Long memberId) {
+		this.memberId = memberId;
+		this.donatorId = null;
+		this.charge = true;
+		this.point = chargePointRequestDto.getPoint();
 	}
 
-	public Point addPoint(int point) {
-		this.point += point;
-		return this;
+	public Point(DonationRequestDto donationRequestDto, Long memberId, Long donatorId) {
+		this.memberId = memberId;
+		this.donatorId = donatorId;
+		this.charge = false;
+		this.point = donationRequestDto.getDonatePoint();
 	}
-
-	public Point usePoint(int point) {
-		this.point -= point;
-		return this;
-	}
-
 }
