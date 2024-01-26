@@ -7,10 +7,10 @@ assignees: ''
 
 ---
 
-##As-Is##
+**As-Is**
 
-##To-Be##
+**To-Be**
 
-##Gap##
+**Expected effects**
 
-##Additional explanation##
+**Additional explanation**
