@@ -21,8 +21,11 @@ public enum ErrorCode {
 	MemberNotFound(HttpStatus.NOT_FOUND, "B001", "회원 정보를 찾을 수 없습니다."),
 	ChannelNotFound(HttpStatus.NOT_FOUND, "B002", "해당 방송을 찾을 수 없습니다."),
 	NoOnAirChannel(HttpStatus.OK, "C001", "현재 진행중인 생방송이 없습니다."),
-	BroadcastEnded(HttpStatus.BAD_REQUEST, "D001", "방송이 종료되었습니다.");
-
+	BroadcastEnded(HttpStatus.BAD_REQUEST, "D001", "방송이 종료되었습니다."),
+	NotEnoughPoint(HttpStatus.BAD_REQUEST, "E001", "레몬이 부족합니다."),
+	DonationFailed(HttpStatus.INTERNAL_SERVER_ERROR, "E002", "도네이션 중 오류가 발생했습니다."),
+	PointQueryFailed(HttpStatus.INTERNAL_SERVER_ERROR, "E003", "잔액 조회중 오류가 발생했습니다."),
+	PointChargeFailed(HttpStatus.INTERNAL_SERVER_ERROR, "E004", "레몬 충전 중 오류가 발생했습니다.");
 
 	private final HttpStatusCode status;
 	private final String code;
