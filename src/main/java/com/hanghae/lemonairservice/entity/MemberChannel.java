@@ -20,13 +20,11 @@ import lombok.Setter;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Builder
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
-public class MemberChannel {
+public class MemberChannel extends TimestampEntity {
 	@Id
 	private Long id;
 	private String title;
 	private Boolean onAir;
-	@Setter
-	private LocalDateTime startedAt;
 
 	@Column("total_streaming")
 	private int totalStreaming;
@@ -37,6 +35,8 @@ public class MemberChannel {
 	@Setter
 	@Transient
 	private Member member;
+
+	private LocalDateTime startedAt;
 
 	public MemberChannel(Member member) {
 		this.title = member.getNickname() + "의 방송";
