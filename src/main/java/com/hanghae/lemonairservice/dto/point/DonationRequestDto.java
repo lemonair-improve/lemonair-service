@@ -6,5 +6,4 @@ import lombok.Getter;
 public class DonationRequestDto {
 	private int donatePoint;
 	private String contents;
-
 }
