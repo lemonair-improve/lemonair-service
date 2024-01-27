@@ -6,12 +6,10 @@ CREATE TABLE member
     login_id   VARCHAR(255) NOT NULL UNIQUE,
     nickname   VARCHAR(255) NOT NULL UNIQUE,
     stream_key VARCHAR(255) NOT NULL UNIQUE,
-    created_at      TIMESTAMP    NOT NULL DEFAULT NOW(),
-    modified_at     TIMESTAMP    NOT NULL DEFAULT NOW()
+    created_at      TIMESTAMP    NOT NULL DEFAULT,
+    modified_at     TIMESTAMP    NOT NULL DEFAULT
 );
 
-ALTER TABLE member add created_at      TIMESTAMP    NOT NULL DEFAULT NOW();
-ALTER TABLE member add modified_at      TIMESTAMP    NOT NULL DEFAULT NOW();
 
 CREATE TABLE member_channel
 (
@@ -21,12 +19,9 @@ CREATE TABLE member_channel
     total_streaming INTEGER      NOT NULL,
     started_at      TIMESTAMP,
     on_air          BOOLEAN      NOT NULL,
-    created_at      TIMESTAMP    NOT NULL DEFAULT NOW(),
-    modified_at     TIMESTAMP    NOT NULL DEFAULT NOW()
+    created_at      TIMESTAMP    NOT NULL,
+    modified_at     TIMESTAMP    NOT NULL
 );
-
-ALTER TABLE member_channel add created_at      TIMESTAMP    NOT NULL DEFAULT NOW();
-ALTER TABLE member_channel add modified_at      TIMESTAMP    NOT NULL DEFAULT NOW();
 
 
 CREATE TABLE point
@@ -36,5 +31,5 @@ CREATE TABLE point
     donator_id BIGINT,
     charge     BOOLEAN,
     point      INTEGER,
-    created_at TIMESTAMP NOT NULL DEFAULT NOW()
+    created_at TIMESTAMP NOT NULL
 );
