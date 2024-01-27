@@ -1,5 +1,8 @@
 package com.hanghae.lemonairservice.service;
 
+import static com.hanghae.lemonairservice.util.ThreadSchedulers.COMPUTE;
+import static com.hanghae.lemonairservice.util.ThreadSchedulers.IO;
+
 import java.util.UUID;
 
 import org.springframework.http.ResponseEntity;
@@ -23,6 +26,7 @@ import com.hanghae.lemonairservice.repository.RefreshTokenRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import reactor.core.publisher.Mono;
+import reactor.core.scheduler.Schedulers;
 
 @Service
 @Slf4j
@@ -38,12 +42,16 @@ public class MemberService {
 	public Mono<ResponseEntity<SignUpResponseDto>> signup(SignUpRequestDto signupRequestDto) {
 		String streamKey = UUID.randomUUID().toString();
 		return validateMemberExists(signupRequestDto).then(createMember(signupRequestDto, streamKey))
+			.subscribeOn(IO.scheduler())
 			.flatMap(this::createMemberChannel)
+			.publishOn(COMPUTE.scheduler())
 			.thenReturn(ResponseEntity.ok(new SignUpResponseDto(streamKey)));
 	}
 
 	public Mono<ResponseEntity<LoginResponseDto>> login(LoginRequestDto loginRequestDto) {
 		return memberRepository.findByLoginId(loginRequestDto.getLoginId())
+			.subscribeOn(IO.scheduler())
+			.publishOn(COMPUTE.scheduler())
 			.switchIfEmpty(Mono.defer(() -> Mono.error(new ExpectedException(ErrorCode.MemberNotFound))))
 			.flatMap(member -> passwordMatches(loginRequestDto, member.getPassword()).then(
 					Mono.zip(jwtUtil.createAccessToken(member.getLoginId(), member.getNickname()),
