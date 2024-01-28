@@ -1,8 +1,8 @@
 package com.hanghae.lemonairservice.entity;
 
-import java.sql.Timestamp;
 import java.time.LocalDateTime;
 
+import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Table;
 
@@ -27,6 +27,8 @@ public class Point {
 	private Long donatorId;
 	private Boolean charge;
 	private Integer point;
+
+	@CreatedDate
 	private LocalDateTime createdAt;
 
 	public Point(ChargePointRequestDto chargePointRequestDto, Long memberId) {

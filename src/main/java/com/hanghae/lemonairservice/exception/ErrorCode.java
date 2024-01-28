@@ -25,7 +25,8 @@ public enum ErrorCode {
 	NotEnoughPoint(HttpStatus.BAD_REQUEST, "E001", "레몬이 부족합니다."),
 	DonationFailed(HttpStatus.INTERNAL_SERVER_ERROR, "E002", "도네이션 중 오류가 발생했습니다."),
 	PointQueryFailed(HttpStatus.INTERNAL_SERVER_ERROR, "E003", "잔액 조회중 오류가 발생했습니다."),
-	PointChargeFailed(HttpStatus.INTERNAL_SERVER_ERROR, "E004", "레몬 충전 중 오류가 발생했습니다.");
+	PointChargeFailed(HttpStatus.INTERNAL_SERVER_ERROR, "E004", "레몬 충전 중 오류가 발생했습니다."),
+	DuplicateRequest(HttpStatus.BAD_REQUEST, "E005", "중복된 후원 요청입니다.");
 
 	private final HttpStatusCode status;
 	private final String code;
