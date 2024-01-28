@@ -26,7 +26,11 @@ public enum ErrorCode {
 	DonationFailed(HttpStatus.INTERNAL_SERVER_ERROR, "E002", "도네이션 중 오류가 발생했습니다."),
 	PointQueryFailed(HttpStatus.INTERNAL_SERVER_ERROR, "E003", "잔액 조회중 오류가 발생했습니다."),
 	PointChargeFailed(HttpStatus.INTERNAL_SERVER_ERROR, "E004", "레몬 충전 중 오류가 발생했습니다."),
-	DuplicateRequest(HttpStatus.BAD_REQUEST, "E005", "중복된 후원 요청입니다.");
+	DuplicateRequest(HttpStatus.BAD_REQUEST, "E005", "중복된 후원 요청입니다."),
+	StreamKeyMismatch(HttpStatus.BAD_REQUEST, "F001", "스트림 키가 일치하지 않습니다."),
+	BroadcastAlreadyStarted(HttpStatus.BAD_REQUEST, "F002", "이미 방송중입니다."),
+	BroadcastNotStartedYet(HttpStatus.INTERNAL_SERVER_ERROR, "F003", "시작되지 않은 방송을 종료 요청했습니다."),
+	ChannelSaveFailed(HttpStatus.INTERNAL_SERVER_ERROR, "F004", "방송 상태 저장 실패");
 
 	private final HttpStatusCode status;
 	private final String code;

@@ -1,5 +1,6 @@
 package com.hanghae.lemonairservice.entity;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
 
 import org.springframework.data.annotation.Id;
@@ -45,8 +46,17 @@ public class MemberChannel extends TimestampEntity {
 		this.memberId = member.getId();
 	}
 
-	public void addTime(int time) {
-		this.totalStreaming += time;
+	public void onAir() {
+		this.onAir = true;
+		this.startedAt = LocalDateTime.now();
 	}
 
+	public void offAir() {
+		this.onAir = false;
+		if (this.startedAt == null) {
+			return;
+		}
+		this.totalStreaming += (int)Duration.between(this.startedAt, LocalDateTime.now()).toMinutes();
+		this.startedAt = null;
+	}
 }
