@@ -1,5 +1,8 @@
 package com.hanghae.lemonairservice.service;
 
+import static com.hanghae.lemonairservice.util.ThreadSchedulers.COMPUTE;
+import static com.hanghae.lemonairservice.util.ThreadSchedulers.IO;
+
 import java.util.List;
 
 import org.springframework.http.ResponseEntity;
@@ -28,6 +31,8 @@ public class MemberChannelService {
 
 	public Mono<ResponseEntity<List<MemberChannelResponseDto>>> getChannelsByOnAirTrue() {
 		return memberChannelRepository.findAllByOnAirIsTrue()
+			.subscribeOn(IO.scheduler())
+			.publishOn(COMPUTE.scheduler())
 			.switchIfEmpty(Mono.defer(() -> Mono.error(new ExpectedException(ErrorCode.NoOnAirChannel))))
 			.flatMap(this::convertToMemberChannelResponseDto)
 			.collectList()
@@ -36,6 +41,8 @@ public class MemberChannelService {
 
 	public Mono<ResponseEntity<MemberChannelDetailResponseDto>> getChannelDetail(Long channelId) {
 		return memberChannelRepository.findById(channelId)
+			.subscribeOn(IO.scheduler())
+			.publishOn(COMPUTE.scheduler())
 			.switchIfEmpty(Mono.error(new RuntimeException("해당 방송이 존재하지 않습니다.")))
 			.filter(MemberChannel::getOnAir)
 			.switchIfEmpty(Mono.error(new RuntimeException("해당 방송은 종료되었습니다.")))

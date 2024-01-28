@@ -6,8 +6,8 @@ CREATE TABLE member
     login_id   VARCHAR(255) NOT NULL UNIQUE,
     nickname   VARCHAR(255) NOT NULL UNIQUE,
     stream_key VARCHAR(255) NOT NULL UNIQUE,
-    created_at      TIMESTAMP    NOT NULL DEFAULT,
-    modified_at     TIMESTAMP    NOT NULL DEFAULT
+    created_at      TIMESTAMP    NOT NULL,
+    modified_at     TIMESTAMP    NOT NULL
 );
 
 

@@ -1,5 +1,8 @@
 package com.hanghae.lemonairservice.service;
 
+import static com.hanghae.lemonairservice.util.ThreadSchedulers.COMPUTE;
+import static com.hanghae.lemonairservice.util.ThreadSchedulers.IO;
+
 import java.time.Duration;
 import org.springframework.data.redis.core.ReactiveRedisTemplate;
 import org.springframework.http.ResponseEntity;
@@ -27,27 +30,34 @@ public class PointService {
 	private final PointRepository pointRepository;
 
 	public Mono<ResponseEntity<PointResponseDto>> getTotalPoint(Long memberId) {
-		return queryTotalPoint(memberId).map(point -> ResponseEntity.ok(new PointResponseDto(point)));
+		return queryTotalPoint(memberId)
+			.subscribeOn(IO.scheduler())
+			.publishOn(COMPUTE.scheduler())
+			.map(point -> ResponseEntity.ok(new PointResponseDto(point)));
 	}
 
 	@Transactional
 	public Mono<ResponseEntity<PointResponseDto>> chargePoints(ChargePointRequestDto chargePointRequestDto,
 		Member member) {
 		return pointRepository.save(new Point(chargePointRequestDto, member.getId()))
+			.subscribeOn(IO.scheduler())
 			.onErrorResume(throwable -> Mono.error(new ExpectedException(ErrorCode.PointChargeFailed)))
 			.then(queryTotalPoint(member.getId()))
+			.publishOn(COMPUTE.scheduler())
 			.flatMap(totalPoint -> Mono.just(ResponseEntity.ok(new PointResponseDto(totalPoint))));
 	}
 
 	@Transactional
 	public Mono<ResponseEntity<PointResponseDto>> donate(DonationRequestDto donationRequestDto, Member member, Long streamerId) {
 		return reactiveRedisTemplate.opsForValue().get(String.valueOf(member.getId()))
+			.subscribeOn(IO.scheduler())
 			.flatMap(existingValue -> Mono.error(new ExpectedException(ErrorCode.DuplicateRequest)))
 			.switchIfEmpty(reactiveRedisTemplate.opsForValue().set(String.valueOf(member.getId()), "ing", Duration.ofSeconds(3)))
 			.then(queryTotalPoint(member.getId())
 				.filter(totalPoint -> totalPoint >= donationRequestDto.getDonatePoint())
 				.switchIfEmpty(Mono.defer(() -> Mono.error(new ExpectedException(ErrorCode.NotEnoughPoint))))
 				.flatMap(totalPoint -> pointRepository.save(new Point(donationRequestDto, streamerId, member.getId()))
+					.publishOn(COMPUTE.scheduler())
 					.onErrorResume(throwable -> Mono.error(RuntimeException::new))
 					.flatMap(savePoint -> Mono.just(ResponseEntity.ok(new PointResponseDto(totalPoint - savePoint.getPoint()))))
 				)
