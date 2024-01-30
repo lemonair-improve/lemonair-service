@@ -38,7 +38,7 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-security'
 	implementation 'org.springframework.boot:spring-boot-starter-validation'
 	implementation 'org.springframework.boot:spring-boot-starter-data-r2dbc'
-	implementation 'org.springframework:spring-webflux:6.1.2'
+	implementation 'org.springframework:spring-webflux'
 	compileOnly 'org.projectlombok:lombok'
 	runtimeOnly 'io.asyncer:r2dbc-mysql'
 	annotationProcessor 'org.projectlombok:lombok'
